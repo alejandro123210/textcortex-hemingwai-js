@@ -21,7 +21,7 @@ type ErrorResponse = AxiosError & {
 export class TextCortex {
   private apiKey: string;
   private request: AxiosInstance = axios.create({
-    baseURL: "https://api.textcortex.com/hemingwai",
+    baseURL: "https://api.textcortex.com/ai_v3",
     headers: {
       "Content-type": "application/json",
       Accept: "text/plain",
@@ -52,8 +52,8 @@ export class TextCortex {
 
   private build({
     prompt,
-    category,
-    parameters,
+    // category,
+    // parameters,
     character_count = 384,
     source_language = "auto",
     creativity = 0.65,
@@ -61,8 +61,8 @@ export class TextCortex {
   }: BuildProps): RequestData {
     const reqData = {
       prompt: prompt,
-      category: category,
-      parameters: parameters,
+      // category: category,
+      // parameters: parameters,
       character_count: character_count,
       source_language: source_language,
       //  Sets creativity, number between 0 and 1. Default is 0.65
@@ -86,85 +86,85 @@ export class TextCortex {
     }
   }
 
-  async generate({
-    prompt,
-    parameters,
-    source_language,
-    character_count,
-    creativity,
-    n_gen,
-  }: GenerateProps) {
-    const data = this.build({
-      prompt,
-      category: "Auto Complete",
-      parameters,
-      character_count,
-      source_language,
-      creativity,
-      n_gen,
-    });
-    return this.makeRequest(data);
-  }
+  // async generate({
+  //   prompt,
+  //   parameters,
+  //   source_language,
+  //   character_count,
+  //   creativity,
+  //   n_gen,
+  // }: GenerateProps) {
+  //   const data = this.build({
+  //     prompt,
+  //     category: "Auto Complete",
+  //     parameters,
+  //     character_count,
+  //     source_language,
+  //     creativity,
+  //     n_gen,
+  //   });
+  //   return this.makeRequest(data);
+  // }
 
-  async generateBlog(input: GenerateBlogProps) {
-    let parameters = "";
-    if (input.blog_categories) {
-      parameters = `Blog Categories: ${JSON.stringify(input.blog_categories)}`;
-    }
+  // async generateBlog(input: GenerateBlogProps) {
+  //   let parameters = "";
+  //   if (input.blog_categories) {
+  //     parameters = `Blog Categories: ${JSON.stringify(input.blog_categories)}`;
+  //   }
 
-    const data = this.build({
-      character_count: input.character_count,
-      source_language: input.source_language,
-      creativity: input.creativity,
-      n_gen: input.n_gen,
-      prompt: input.blog_title,
-      category: "Blog Body",
-      parameters,
-    });
-    return this.makeRequest(data);
-  }
+  //   const data = this.build({
+  //     character_count: input.character_count,
+  //     source_language: input.source_language,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen,
+  //     prompt: input.blog_title,
+  //     category: "Blog Body",
+  //     parameters,
+  //   });
+  //   return this.makeRequest(data);
+  // }
 
-  async generateAds(input: GenerateAdsProps) {
-    const data = this.build({
-      prompt: input.prompt,
-      category: "Ads",
-      parameters: input.parameters,
-      character_count: input.character_count,
-      creativity: input.creativity,
-      n_gen: input.n_gen,
-      source_language: input.source_language,
-    });
+  // async generateAds(input: GenerateAdsProps) {
+  //   const data = this.build({
+  //     prompt: input.prompt,
+  //     category: "Ads",
+  //     parameters: input.parameters,
+  //     character_count: input.character_count,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen,
+  //     source_language: input.source_language,
+  //   });
 
-    return this.makeRequest(data);
-  }
+  //   return this.makeRequest(data);
+  // }
 
-  async generateEmailBody(input: GenerateEmailBodyProps) {
-    const data = this.build({
-      prompt: input.email_subject,
-      category: "Email Body",
-      parameters: input.parameters,
-      character_count: input.character_count,
-      creativity: input.creativity,
-      n_gen: input.n_gen,
-      source_language: input.source_language,
-    });
+  // async generateEmailBody(input: GenerateEmailBodyProps) {
+  //   const data = this.build({
+  //     prompt: input.email_subject,
+  //     category: "Email Body",
+  //     parameters: input.parameters,
+  //     character_count: input.character_count,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen,
+  //     source_language: input.source_language,
+  //   });
 
-    return this.makeRequest(data);
-  }
+  //   return this.makeRequest(data);
+  // }
 
-  async generateEmailSubject(input: GenerateEmailSubjectProps) {
-    const data = this.build({
-      prompt: input.keywords,
-      category: "Email Subject",
-      parameters: input.parameters,
-      character_count: input.character_count,
-      creativity: input.creativity,
-      n_gen: input.n_gen,
-      source_language: input.source_language,
-    });
+  // async generateEmailSubject(input: GenerateEmailSubjectProps) {
+  //   const data = this.build({
+  //     prompt: input.keywords,
+  //     category: "Email Subject",
+  //     parameters: input.parameters,
+  //     character_count: input.character_count,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen,
+  //     source_language: input.source_language,
+  //   });
 
-    return this.makeRequest(data);
-  }
+  //   return this.makeRequest(data);
+  // }
 
   async generateProductDescriptions({
     product_brand = "",
@@ -197,80 +197,83 @@ export class TextCortex {
     }
 
     const data = this.build({
-      prompt: input.product_title,
-      category: "Product Description",
-      parameters: parameters,
-      character_count: input.character_count,
-      creativity: input.creativity,
-      n_gen: input.n_gen,
-      source_language: input.source_language,
+      prompt: {
+        brand: "",
+        product_category: product_category,
+        product_features: product_features,
+        product_name: input.product_title,
+      },
+      character_count: 200,
+      creativity: 0.7,
+      n_gen: 1,
+      source_language: "en",
     });
 
     return this.makeRequest(data);
   }
 
-  async generateMetaDescription(input: GenerateMetaDescProps) {
-    const data = this.build({
-      prompt: input.pageTitle,
-      category: "Meta Description",
-      parameters: input.pageKeywords,
-      character_count: input.character_count || 256,
-      creativity: input.creativity,
-      n_gen: input.n_gen,
-      source_language: input.source_language,
-    });
-    return this.makeRequest(data);
-  }
+  // async generateMetaDescription(input: GenerateMetaDescProps) {
+  //   const data = this.build({
+  //     prompt: input.pageTitle,
+  //     category: "Meta Description",
+  //     parameters: input.pageKeywords,
+  //     character_count: input.character_count || 256,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen,
+  //     source_language: input.source_language,
+  //   });
+  //   return this.makeRequest(data);
+  // }
 
-  async generateBlogTitle(input: GenerateBlogTitleProps) {
-    const data = this.build({
-      prompt: JSON.stringify(input.blogCategories),
-      category: "Blog Title",
-      parameters: "",
-      character_count: input.character_count,
-      creativity: input.creativity,
-      n_gen: input.n_gen,
-      source_language: input.source_language,
-    });
-    return this.makeRequest(data);
-  }
+  // async generateBlogTitle(input: GenerateBlogTitleProps) {
+  //   const data = this.build({
+  //     prompt: JSON.stringify(input.blogCategories),
+  //     category: "Blog Title",
+  //     parameters: "",
+  //     character_count: input.character_count,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen,
+  //     source_language: input.source_language,
+  //   });
+  //   return this.makeRequest(data);
+  // }
 
-  async generateInstagramCaption(input: GenerateInstagramCaptionsProps) {
-    const data = this.build({
-      prompt: input.product,
-      category: "Instagram Caption",
-      parameters: input.audience,
-      character_count: input.character_count || 256,
-      creativity: input.creativity,
-      n_gen: input.n_gen,
-      source_language: input.source_language,
-    });
-    return this.makeRequest(data);
-  }
+  // async generateInstagramCaption(input: GenerateInstagramCaptionsProps) {
+  //   const data = this.build({
+  //     prompt: input.product,
+  //     category: "Instagram Caption",
+  //     parameters: input.audience,
+  //     character_count: input.character_count || 256,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen,
+  //     source_language: input.source_language,
+  //   });
+  //   return this.makeRequest(data);
+  // }
 
-  async paraphrase(input: ParaphraseProps) {
-    const data = this.build({
-      prompt: input.prompt,
-      category: "Paraphrase",
-      parameters: input.tone || "",
-      character_count: input.character_count || 128,
-      creativity: input.creativity,
-      n_gen: input.n_gen || 5,
-      source_language: input.source_language,
-    });
-    return this.makeRequest(data);
-  }
+  // async paraphrase(input: ParaphraseProps) {
+  //   const data = this.build({
+  //     prompt: input.prompt,
+  //     category: "Paraphrase",
+  //     parameters: input.tone || "",
+  //     character_count: input.character_count || 128,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen || 5,
+  //     source_language: input.source_language,
+  //   });
+  //   return this.makeRequest(data);
+  // }
 
-  async extend(input: ExtendProps) {
-    const data = this.build({
-      prompt: input.prompt,
-      category: "Extend",
-      parameters: input.parameters || "",
-      character_count: input.character_count || 256,
-      creativity: input.creativity,
-      n_gen: input.n_gen || 2,
-      source_language: input.source_language,
-    });
-    return this.makeRequest(data);
-  }
+  // async extend(input: ExtendProps) {
+  //   const data = this.build({
+  //     prompt: input.prompt,
+  //     category: "Extend",
+  //     parameters: input.parameters || "",
+  //     character_count: input.character_count || 256,
+  //     creativity: input.creativity,
+  //     n_gen: input.n_gen || 2,
+  //     source_language: input.source_language,
+  //   });
+  //   return this.makeRequest(data);
+  // }
 }

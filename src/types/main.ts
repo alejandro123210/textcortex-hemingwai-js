@@ -5,10 +5,17 @@ export interface Base {
   n_gen?: number;
 }
 
+interface prompt {
+  brand: string;
+  product_category: string[];
+  product_features: string[];
+  product_name: string;
+}
+
 export interface BuildProps extends Base {
-  prompt: string;
-  category: string;
-  parameters: string;
+  prompt: prompt;
+  // category: string;
+  // parameters: string;
 }
 
 export interface GenerateProps extends Base {
@@ -41,9 +48,9 @@ export interface GenerateProductDescriptionProps extends Base {
 }
 
 export interface RequestData extends Base {
-  prompt: string;
-  category: string;
-  parameters: string;
+  prompt: prompt;
+  // category: string;
+  // parameters: string;
   character_count: number;
   source_language: Country;
   creativity: number;
